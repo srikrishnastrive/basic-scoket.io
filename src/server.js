@@ -35,20 +35,21 @@ io.on("connection", (socket) => {
 });
 
 app.post('/sendPayload',async (req,res)=>{
+    console.log(req.body)
     const {userId,payload} = req.body;
     if(!userId || !payload){
-        res.status(400).send("Invalid request");
+        return res.status(400).send("Invalid request");
     }
     const socketId = await redis.get(userId);
     if(socketId){
         io.to(socketId).emit('submissionPayloadResponse',payload);
-        res.send('payload sent successfully');
+        return res.send('payload sent successfully');
 
     }else {
-        res.status(400).send("User not connected");
+        return res.status(400).send("User not connected");
     }
 })
 
-httpServer.listen(3000, () => {
-    console.log("Server is running on port 3000");
+httpServer.listen(3002, () => {
+    console.log("Server is running on port 3002");
 });
